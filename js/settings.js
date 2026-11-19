@@ -1,5 +1,5 @@
 // 운영자 설정: 이 브라우저의 localStorage에만 저장한다.
-const KEY = 'hand-dart:v1';
+const KEY = 'dart-kiosk:v1'; // 손짓 다트(hand-dart)와 같은 주소에 올라가므로 저장 칸을 따로 쓴다
 export const PALETTE = ['#e9604c', '#2f76d9', '#2ea874', '#f0b91f', '#8e63d6', '#ef8433', '#22a7b8', '#e05c9f'];
 export const MIN_SEGS = 2, MAX_SEGS = 8;
 

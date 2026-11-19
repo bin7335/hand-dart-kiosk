@@ -1,12 +1,12 @@
 // 오프라인 캐시: 박람회장 와이파이가 끊겨도 한 번 연 기기에서는 계속 동작한다.
-// 파일을 바꿔서 배포할 때 VERSION을 올리면 예전 캐시를 지운다.
-const VERSION = 'hand-dart-v9';
+// 파일을 바꿔서 배포할 때 VERSION을 올리면 예전 캐시를 지운다. 같은 주소의 다른 앱 캐시는 건드리지 않는다(이 앱 이름으로 시작하는 것만 지움).
+const PREFIX = 'dart-kiosk-', VERSION = PREFIX + 'v1';
 const APP = ['./', './index.html', './css/app.css', './js/main.js', './js/hand.js', './js/hand-worker.js', './js/settings.js', './js/pick.js', './js/mascot.js', './js/sfx.js'];
 // 손 인식 라이브러리·모델(약 22MB): 버전이 고정돼 있어 한 번 받으면 다시 받지 않는다.
 const VENDOR = ['./vendor/mediapipe/vision_bundle.mjs', './vendor/mediapipe/wasm/vision_wasm_internal.js', './vendor/mediapipe/wasm/vision_wasm_internal.wasm', './vendor/mediapipe/hand_landmarker.task'];
 
 self.addEventListener('install', e => { e.waitUntil(caches.open(VERSION).then(c => c.addAll([...APP, ...VENDOR])).then(() => self.skipWaiting())); });
-self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
+self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k.startsWith(PREFIX) && k !== VERSION).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
 self.addEventListener('fetch', e => {
   const url = new URL(e.request.url);
   if (e.request.method !== 'GET' || url.origin !== location.origin) return;

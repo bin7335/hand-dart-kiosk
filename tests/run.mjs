@@ -21,7 +21,7 @@ const server = http.createServer((req, res) => {
 await new Promise(r => server.listen(0, '127.0.0.1', r));
 const ORIGIN = `http://127.0.0.1:${server.address().port}`;
 const port = 9700 + Math.floor(Math.random() * 200);
-const udd = path.join(process.env.TEMP || '/tmp', 'hand-dart-test-' + port);
+const udd = path.join(process.env.TEMP || '/tmp', 'dart-kiosk-test-' + port);
 const chrome = spawn(CHROME, ['--headless=new', '--hide-scrollbars', '--mute-audio', '--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', '--autoplay-policy=no-user-gesture-required', '--enable-unsafe-swiftshader', `--remote-debugging-port=${port}`, `--user-data-dir=${udd}`, '--window-size=1600,900', 'about:blank'], { stdio: 'ignore' });
 let wsUrl; for (let i = 0; i < 100 && !wsUrl; i++) { try { const j = await (await fetch(`http://127.0.0.1:${port}/json/list`)).json(); wsUrl = j.find(t => t.type === 'page')?.webSocketDebuggerUrl; } catch {} if (!wsUrl) await sleep(200); }
 if (!wsUrl) { console.error('크롬 연결 실패'); process.exit(2); }
@@ -220,7 +220,7 @@ await t('설정 창: 칸 추가·이름에 태그를 넣어도 글자로만 표�
     inputs[1].value='인공지능 그림 그리기 체험'; inputs[1].dispatchEvent(new Event('input',{bubbles:true}));
     $('#setSpin').value=55; $('#setSpin').dispatchEvent(new Event('input',{bubbles:true})); await wait(200);
     assert(!window.__xss,'스크립트 실행됨'); assert($$('#legend li').length===4,'범례 4개'); assert($('#legend img')===null,'범례에 태그 없음');
-    const saved=JSON.parse(localStorage.getItem('hand-dart:v1')); assert(saved.segs.length===4&&saved.spin===55,'저장'); $('#sheet').close(); return saved.segs.map(s=>s.name).join(' | ')`);
+    const saved=JSON.parse(localStorage.getItem('dart-kiosk:v1')); assert(saved.segs.length===4&&saved.spin===55,'저장'); $('#sheet').close(); return saved.segs.map(s=>s.name).join(' | ')`);
   await load(ORIGIN + '/'); const n = await ev(`await until(()=>A(),5000,'앱'); await wait(200); return A().S.segs.length+'칸, 회전 '+A().S.spin+', xss '+(window.__xss||0)`);
   if (!n.startsWith('4칸, 회전 55, xss 0')) throw new Error('복원 실패: ' + n);
   noErrors('설정'); return r;
